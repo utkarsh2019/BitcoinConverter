@@ -26,10 +26,13 @@ import java.util.Scanner;
 
 public class MainActivity extends AppCompatActivity {
 
+    // Name that is saved
     private static String userName;
 
+    // 1 sec waiting time for splash screen
     private static int splashTimeout = 1000;
 
+    // Internal Storage in private mode
     private static String filename = "BitcoinName";
 
     @Override
@@ -39,6 +42,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.splash_screen);
 
         userName = null;
+
+        // Open file if doesn't exist
         File directory;
         if (filename.isEmpty()){
             directory = getFilesDir();
@@ -47,6 +52,8 @@ public class MainActivity extends AppCompatActivity {
             directory = getDir(filename,MODE_PRIVATE);
         }
         File [] files = directory.listFiles();
+
+        // Get name saved in Internal Storage
         try {
             FileInputStream fis = openFileInput(filename);
             Scanner sc = new Scanner(fis);
@@ -67,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
+        // Delay for Splash Screen
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -76,6 +84,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void getName() {
+
+        // Initially ask for name
         if(userName == null) {
             setContentView(R.layout.activity_main);
             Button submitName = (Button) findViewById(R.id.submitName);
@@ -98,11 +108,13 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         }
+        // Go directly to conversion options
         else {
             setGUI();
         }
     }
 
+    // Calls MainContent activity as New Task
     public void setGUI() {
         Intent startContent = new Intent(MainActivity.this, MainContent.class);
         startContent.putExtra("name",userName);

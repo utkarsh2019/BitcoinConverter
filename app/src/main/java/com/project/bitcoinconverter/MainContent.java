@@ -20,7 +20,11 @@ import java.io.IOException;
 
 public class MainContent extends AppCompatActivity {
 
-    public static String userName;
+    // Name that is saved
+    private static String userName;
+
+    // Internal Storage in private mode
+    private static String filename = "BitcoinName";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,23 +34,22 @@ public class MainContent extends AppCompatActivity {
         setGUI();
     }
 
+    // Inflating the menu; this adds items to the action bar if it is present.
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
+    // Handling action bar item clicks here
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.change_name) {
-            String filename = "BitcoinName";
+
+            // Reset name saved in Internal Storage to null
             try {
                 FileOutputStream fos = openFileOutput(filename,Context.MODE_PRIVATE);
                 fos.write("".getBytes());
@@ -56,25 +59,36 @@ public class MainContent extends AppCompatActivity {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            Intent startMainActivity = new Intent(MainContent.this, MainActivity.class);
-            startMainActivity.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+
+            // Call Main Activity as a New Task
+            Intent startMainActivity = new Intent
+                                    (MainContent.this, MainActivity.class);
+            startMainActivity.setFlags
+                            (Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(startMainActivity);
         }
 
         return super.onOptionsItemSelected(item);
     }
 
+    // Sets up GUI for MainContent
     public void setGUI() {
+
+        // Edit the Welcome message
         TextView welcomeMessage = (TextView) findViewById(R.id.displayName);
         welcomeMessage.setText("Welcome "+userName+"!");
 
+        // Populate the Currencies
         final Spinner currencies = (Spinner) findViewById(R.id.currencySpinner);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,R.array.currency_array, android.R.layout.simple_spinner_item);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource
+                                            (this,R.array.currency_array,
+                                                    android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         currencies.setAdapter(adapter);
 
         Button convert = (Button) findViewById(R.id.convertCurrency);
 
+        // On clicking convert, call activity Convert to show value
         convert.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

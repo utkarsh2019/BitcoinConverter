@@ -21,36 +21,41 @@ import org.json.JSONObject;
 
 public class Convert extends AppCompatActivity {
 
-    RequestQueue queue;
+    // Queue for all https requests made
+    private RequestQueue queue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         queue = Volley.newRequestQueue(this);
+        setContentView(R.layout.convert_display);
         setGUI();
     }
 
+    // Sets up GUI for Convert
     public void setGUI() {
-        setContentView(R.layout.convert_display);
+
+        // Currency to be converted into
         final String currency = getIntent().getStringExtra("currency");
 
-        System.out.println("Currency"+currency);
         FloatingActionButton back = (FloatingActionButton) findViewById(R.id.back);
         final TextView converted = (TextView) findViewById(R.id.currencyValue);
 
+        // URL for api call to get converted value
         String url = "https://apiv2.bitcoinaverage.com/convert/global?from=BTC&to=" + currency
                     + "&amount=1";
 
-        System.out.println("Link: "+url);
-
+        // Making https request to get back JSON object
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
                 (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
 
                     @Override
                     public void onResponse(JSONObject response) {
-                        System.out.println("FLAG5");
                         try {
+                            // Stop loading
                             findViewById(R.id.loadingPanel).setVisibility(View.GONE);
+
+                            // Set the value on screen
                             converted.setText(response.getString("price")+" "+currency);
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -60,14 +65,18 @@ public class Convert extends AppCompatActivity {
 
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(getBaseContext(), "Please try again.", Toast.LENGTH_SHORT)
-                                .show();
+                        // Notify of fail call
+                        Toast.makeText(getBaseContext(),
+                                "Please try again.", Toast.LENGTH_SHORT).show();
+
                         killActivity();
                     }
                 });
 
+        // Add the request to the queue of requests
         queue.add(jsonObjectRequest);
 
+        // On pressing cross button
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -82,8 +91,12 @@ public class Convert extends AppCompatActivity {
         super.onStart();
     }
 
+    // Kill activity
     public void killActivity() {
+        // Cancel all pending requests
         queue.cancelAll(this);
+
+        // Finish activity
         finish();
     }
 

@@ -3,6 +3,7 @@ package com.project.bitcoinconverter;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -25,13 +26,19 @@ import java.util.Scanner;
 
 public class MainActivity extends AppCompatActivity {
 
-    public static String userName;
+    private static String userName;
+
+    private static int splashTimeout = 1000;
+
+    private static String filename = "BitcoinName";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        final String filename = "BitcoinName";
+        setContentView(R.layout.splash_screen);
+
+        userName = null;
         File directory;
         if (filename.isEmpty()){
             directory = getFilesDir();
@@ -44,10 +51,13 @@ public class MainActivity extends AppCompatActivity {
             FileInputStream fis = openFileInput(filename);
             Scanner sc = new Scanner(fis);
             sc.useDelimiter("\\Z");
-            String content = sc.next();
+            String content = null;
+            Boolean notEmpty = sc.hasNext();
+            if (notEmpty) {
+                content = sc.next();
+            }
             if(content != null) {
                 userName = content;
-//                System.out.println("FLAG1:"+userName);
             }
             sc.close();
             fis.close();
@@ -56,9 +66,17 @@ public class MainActivity extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
-//        System.out.println("FLAG2:"+userName);
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                getName();
+            }
+        },splashTimeout);
+    }
+
+    public void getName() {
         if(userName == null) {
-//            System.out.println("FLAG3");
             setContentView(R.layout.activity_main);
             Button submitName = (Button) findViewById(R.id.submitName);
             final EditText getName = (EditText) findViewById(R.id.nameText);
@@ -66,7 +84,6 @@ public class MainActivity extends AppCompatActivity {
             submitName.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-//                    System.out.println("FLAG4");
                     userName = getName.getText().toString().trim();
                     try {
                         FileOutputStream fos = openFileOutput(filename,Context.MODE_PRIVATE);
@@ -84,28 +101,6 @@ public class MainActivity extends AppCompatActivity {
         else {
             setGUI();
         }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 
     public void setGUI() {

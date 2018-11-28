@@ -50,6 +50,7 @@ public class Convert extends AppCompatActivity {
                     public void onResponse(JSONObject response) {
                         System.out.println("FLAG5");
                         try {
+                            findViewById(R.id.loadingPanel).setVisibility(View.GONE);
                             converted.setText(response.getString("price")+" "+currency);
                         } catch (JSONException e) {
                             e.printStackTrace();

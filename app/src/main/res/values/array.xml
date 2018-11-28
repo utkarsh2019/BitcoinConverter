@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="currency_array">
-        <item>US Dollar</item>
-        <item>Euro</item>
-        <item>British Pound</item>
-        <item>Chinese Yuan</item>
-        <item>Indian Rupee</item>
+        <item>US Dollar (USD)</item>
+        <item>Euro (EUR)</item>
+        <item>British Pound (GBP)</item>
+        <item>Chinese Yuan (CNY)</item>
+        <item>Indian Rupee (INR)</item>
     </string-array>
 </resources>

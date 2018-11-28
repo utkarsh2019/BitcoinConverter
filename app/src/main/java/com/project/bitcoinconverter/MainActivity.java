@@ -1,6 +1,7 @@
 package com.project.bitcoinconverter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -46,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
             String content = sc.next();
             if(content != null) {
                 userName = content;
+//                System.out.println("FLAG1:"+userName);
             }
             sc.close();
             fis.close();
@@ -54,7 +56,9 @@ public class MainActivity extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
+//        System.out.println("FLAG2:"+userName);
         if(userName == null) {
+//            System.out.println("FLAG3");
             setContentView(R.layout.activity_main);
             Button submitName = (Button) findViewById(R.id.submitName);
             final EditText getName = (EditText) findViewById(R.id.nameText);
@@ -62,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
             submitName.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+//                    System.out.println("FLAG4");
                     userName = getName.getText().toString().trim();
                     try {
                         FileOutputStream fos = openFileOutput(filename,Context.MODE_PRIVATE);
@@ -79,15 +84,6 @@ public class MainActivity extends AppCompatActivity {
         else {
             setGUI();
         }
-
-//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//            }
-//        });
     }
 
     @Override
@@ -113,17 +109,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void setGUI() {
-        setContentView(R.layout.content_main);
-        TextView welcomeMessage = (TextView) findViewById(R.id.displayName);
-        welcomeMessage.setText("Welcome "+userName+"!");
+        Intent startContent = new Intent(MainActivity.this, MainContent.class);
+        startContent.putExtra("name",userName);
+        startContent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(startContent);
     }
 
     @Override
     public void onStart() {
+
         super.onStart();
-        setContentView(R.layout.content_main);
-        TextView welcomeMessage = (TextView) findViewById(R.id.displayName);
-        welcomeMessage.setText("Welcome "+userName+"!");
     }
 
     @Override
